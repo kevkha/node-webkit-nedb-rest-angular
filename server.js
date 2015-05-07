@@ -2,6 +2,8 @@ var
   express = require("express"),
   path = require("path"),
   nedb = require('nedb'),
+  logger = require('morgan'),
+  bodyParser = require('body-parser'),  
   databaseUrl = "db/items.db";
 
 var db = {
@@ -10,12 +12,11 @@ var db = {
 
 var app = express();
 
-app.configure(function () {
-  app.set('port', process.env.PORT || 3000);
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser()),
-  app.use(express.static(path.join(__dirname, 'public')));
-});
+app.set('port', process.env.PORT || 3000);
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api', function (req, res) {
   res.send('API is running');
