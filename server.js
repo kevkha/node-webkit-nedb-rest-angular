@@ -2,20 +2,22 @@ var
   express = require("express"),
   path = require("path"),
   nedb = require('nedb'),
-  databaseUrl = "db/items.db";
+  logger = require('morgan'),
+  bodyParser = require('body-parser'),
+  databaseUrl = "db/contacts.db";
 
 var db = {
-  items: new nedb({ filename: databaseUrl, autoload: true })
+  contacts: new nedb({ filename: databaseUrl, autoload: true })
 };
 
 var app = express();
 
-app.configure(function () {
-  app.set('port', process.env.PORT || 3000);
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser()),
-  app.use(express.static(path.join(__dirname, 'public')));
-});
+
+app.set('port', process.env.PORT || 3000);
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api', function (req, res) {
   res.send('API is running');
